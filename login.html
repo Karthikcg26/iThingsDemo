@@ -1,0 +1,117 @@
+
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/app-router/app-router.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/google-map/google-map.html">
+<link rel="import" href="../../bower_components/google-map/google-map-marker.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+
+
+
+
+<dom-module id="Login-view">
+    <style>
+        :host {
+            display: block;
+        }
+        paper-icon-button{
+            color:#fafafa;
+        }
+        paper-header-panel {
+            --paper-header-panel-standard-container: {
+                border: 1px solid gray;
+            };
+        }
+
+        paper-toolbar {
+            --paper-toolbar-background:#2A6F7F;
+            --paper-toolbar-title: {
+                font-style: italic;
+                font-weight: bold;
+                color: #fafafa;
+                font-size: xx-large;
+            };
+        }
+    </style>
+
+    <template>
+    <a href="#/home">login</a>
+        <paper-drawer-panel id="login-page" class="flex" forcenarrow="" right-drawer="" disable-edge-swipe="" disable-swipe="" drawerWidth="320px">
+            <div id="loginpage" main>
+                <paper-header-panel id="logindata" main>
+                    <paper-toolbar id="Logintoolbar">
+                        <iron-icon src="/images/iorbit-logo-1.png"  ></iron-icon>
+                        <span class="title" align="left" style="padding-bottom: 10px;"> iThings </span>
+                        <!--<paper-icon-button paper-drawer-toggle>LOG IN</paper-icon-button>-->
+                    </paper-toolbar>
+                    <paper-material style=" position:absolute; width:400px;height:200px;" elevation="4">
+                        <p> description about the product goes here </p>
+                    </paper-material>
+                </paper-header-panel>
+            </div>
+            <div drawer>
+                <paper-header-panel drawer>
+
+                    <iron-image src="/images/iorbit-logo-1.png"  style="padding-left: 85px;padding-bottom: 20px;padding-top: 60px;padding-right:85px;" align="centre"></iron-image>
+                    <!--
+                    ### I tried using action="checklogin.php" like I used in Resonate's application but it didn't worked for me
+                    ### Whether Can I use the following method for login???
+                    ### I have included php files as well
+                    -->
+                    <form id="form" method="post">
+                        <paper-dropdown-menu name="tenant" label="Tenant" on-iron-select="_itemSelected" required style="padding: 10px;">
+                            <paper-listbox class="dropdown-content">
+                                <paper-item>Rinacdemo</paper-item>
+                                <!-- <paper-item>Demo</paper-item> -->
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-input id="username" name="username" label="Username" style="padding: 10px;"></paper-input>
+                        <paper-input id="password" name="password" label="Password" style="padding: 10px;"></paper-input>
+
+                        <paper-button on-click="submitForm" type="submit" style="padding-left: 100px; padding-right:100px;color: #fafafa; background-color: #2A6F7F;" >LogIn</paper-button>
+                    </form>
+                </paper-header-panel>
+                <!--<paper-input type="hidden" name="redirectURL" value="../Map-view/map-view.html" ></paper-input>-->
+            </div>
+        </paper-drawer-panel>
+    </template>
+   <script>
+       Polymer({
+          is:"Login-view",
+           properties: {
+               tenant: {
+                   type: String
+               }
+           },
+           _itemSelected : function(e) {
+               var selectedItem = e.target.selectedItem;
+               if (selectedItem) {
+                   tenant = selectedItem.innerText;
+               }
+           },
+           submitForm : function(e) {
+               console.log("tenant: " + tenant);
+               console.log("tenant: " + this.$.username.value);
+               console.log("tenant: " + this.$.password.value);
+               var usname = this.$.username.value;
+               var pas = this.$.password.value;
+               data = "'FlowAdmin':{'___smart_action___':'lookup', '___smart_value___':'Security'},'identity':'"+usname+"', 'password':'"+pas+"', 'type':'custom'";
+               $.post('192.168.31.214:9081/'+tenant+'/Security/Authenticate', data,
+                       function(data,status){
+                           alert("Data: " + data + "\n Status: " + status);
+                       }
+               );
+           },
+           ready: function () {
+
+           }
+       });
+   </script>
+</dom-module>
